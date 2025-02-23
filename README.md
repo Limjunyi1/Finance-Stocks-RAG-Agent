@@ -22,3 +22,10 @@ Employ a Retrieval-Augmented Generation (RAG) setup along with an agile agent th
   * yfinance
   * Streamlit or Gradio
 * Version Control: Git
+
+## Sample documents used
+* https://finance.yahoo.com/news/warren-buffett-says-berkshire-hathaway-did-better-than-i-expected-last-year-in-latest-letter-to-shareholders-151248284.html
+* https://finance.yahoo.com/news/mercedes-benz-wont-be-following-tesla-and-elon-musk-into-robotaxis-132803197.html
+* https://finance.yahoo.com/news/gold-heads-for-eighth-weekly-gain-as-precious-metals-shipments-to-us-rise-195332488.html
+* https://finance.yahoo.com/news/rivian-posts-170-million-gross-profit-in-q4-sees-losses-decreasing-as-variable-costs-improve-185717790.html
+* https://finance.yahoo.com/news/reddit-stock-falls-more-than-20-since-last-weeks-earnings-report-as-6-month-rally-eases-143107638.html
