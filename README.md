@@ -17,7 +17,7 @@ Employ a Retrieval-Augmented Generation (RAG) setup along with an agile agent th
 * Key Libraries:
   * Huggingface Transformers
   * Sentence Transformers
-  * FAISS
+  * FAISS-CPU (or consider GPU version if you got beefy GPU)
   * smolagents (or a custom orchestrator)
   * yfinance
   * Streamlit or Gradio
