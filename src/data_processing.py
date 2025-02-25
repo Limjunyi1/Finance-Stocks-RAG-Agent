@@ -3,6 +3,8 @@ import re
 import json
 from typing import List
 from bs4 import BeautifulSoup
+from nltk.tokenize import sent_tokenize  # Ensure NLTK's punkt tokenizer is available
+
 
 def clean_text(text: str) -> str:
     """
@@ -34,32 +36,53 @@ def clean_text(text: str) -> str:
 
 def segment_text(text: str, chunk_size: int = 200, overlap: int = 20) -> List[str]:
     """
-    Segments a text into overlapping chunks based on words.
-    
-    The function splits the cleaned text into words and then groups
-    them into chunks of a specified size. Consecutive chunks will share a number
-    of words as defined by 'overlap' so that context is preserved across chunks.
-    
+    Segments a text into overlapping chunks using sentence tokenization.
+
+    The text is tokenized into sentences using NLTK, and then these sentences are grouped 
+    together until the total word count roughly reaches the specified chunk_size. Consecutive
+    chunks will share an overlap of sentences (based on a target word count) so that context
+    is preserved across chunks.
+
     Args:
         text (str): Cleaned text.
-        chunk_size (int, optional): The number of words in each chunk. Defaults to 200.
-        overlap (int, optional): The number of overlapping words between consecutive chunks.
+        chunk_size (int, optional): Approximate number of words per chunk. Defaults to 200.
+        overlap (int, optional): Number of words to overlap between consecutive chunks.
             Defaults to 20.
     
     Returns:
         List[str]: A list containing the text chunks.
     """
-    words = text.split()
+    sentences = sent_tokenize(text)
     chunks = []
     start = 0
-    while start < len(words):
-        end = start + chunk_size
-        chunk = " ".join(words[start:end])
-        chunks.append(chunk)
-        if end >= len(words):
-            break
-        # Move back 'overlap' words so that the next chunk overlaps with the current one.
-        start = end - overlap
+
+    while start < len(sentences):
+        current_chunk = []
+        word_count = 0
+        end = start
+
+        # Group sentences until the target word count is met or exceeded.
+        while end < len(sentences) and word_count < chunk_size:
+            sentence = sentences[end]
+            current_chunk.append(sentence)
+            word_count += len(sentence.split())
+            end += 1
+        
+        chunks.append(" ".join(current_chunk))
+        
+        # Determine new start index by overlapping sentences from the current chunk:
+        overlap_word_count = 0
+        new_start = end  # default if not enough sentences for overlap
+        # Iterate backwards through the sentences in the current chunk to accumulate overlap words.
+        for i in range(end - 1, start - 1, -1):
+            overlap_word_count += len(sentences[i].split())
+            if overlap_word_count >= overlap:
+                new_start = i
+                break
+        
+        # Prevent the new start from falling behind the current start.
+        start = new_start if new_start > start else end
+
     return chunks
 
 
@@ -73,7 +96,7 @@ def process_documents(input_dir: str, output_path: str, chunk_size: int = 200, o
     Args:
         input_dir (str): Directory path containing .txt files.
         output_path (str): Path to the output JSON file.
-        chunk_size (int, optional): Number of words per chunk for segmentation. Defaults to 200.
+        chunk_size (int, optional): Approximate number of words per chunk for segmentation. Defaults to 200.
         overlap (int, optional): Number of overlapping words between chunks. Defaults to 20.
     """
     processed_docs = []
