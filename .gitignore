@@ -1,2 +1,4 @@
 
 /venv
+/src/agent/__pycache__
+/src/retrieval/__pycache__
